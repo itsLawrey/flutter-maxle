@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "itslawrey-flutter-demos"
-  }
+  },
+  "targets": {
+    "itslawrey-flutter-demos": {
+      "hosting": {
+        "maxle": [
+          "itslawrey-flutter-demos"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
