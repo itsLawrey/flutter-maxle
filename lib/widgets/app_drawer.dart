@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_provider.dart';
+import '../utils/profile_utils.dart';
 import '../screens/history_screen.dart';
 import '../screens/personalization_screen.dart';
 
@@ -23,6 +23,10 @@ class AppDrawer extends StatelessWidget {
 
     final colorIndex = int.tryParse(provider.profileImageIndex);
     final isCustomImage = colorIndex == null;
+    final customImageProvider = isCustomImage
+        ? getProfileImageProvider(provider.profileImageIndex)
+        : null;
+    final showCustomImage = isCustomImage && customImageProvider != null;
 
     return Drawer(
       backgroundColor: const Color(0xFF1E1E1E),
@@ -58,20 +62,19 @@ class AppDrawer extends StatelessWidget {
                         height: 60,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isCustomImage
+                          color: showCustomImage
                               ? Colors.transparent
-                              : avatarColors[colorIndex! % avatarColors.length],
-                          image: isCustomImage
+                              : avatarColors[(colorIndex ?? 0) %
+                                    avatarColors.length],
+                          image: showCustomImage
                               ? DecorationImage(
-                                  image: FileImage(
-                                    File(provider.profileImageIndex),
-                                  ),
+                                  image: customImageProvider!,
                                   fit: BoxFit.cover,
                                 )
                               : null,
                           border: Border.all(color: Colors.white, width: 2),
                         ),
-                        child: !isCustomImage
+                        child: !showCustomImage
                             ? Center(
                                 child: Text(
                                   provider.nickname.isNotEmpty

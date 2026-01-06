@@ -1,9 +1,11 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import '../providers/app_provider.dart';
+import '../utils/profile_utils.dart';
 
 class PersonalizationScreen extends StatefulWidget {
   const PersonalizationScreen({super.key});
@@ -45,8 +47,15 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
+      String result;
+      if (kIsWeb) {
+        final bytes = await image.readAsBytes();
+        result = base64Encode(bytes);
+      } else {
+        result = image.path;
+      }
       setState(() {
-        _selectedAvatarIndex = image.path;
+        _selectedAvatarIndex = result;
       });
     }
   }
@@ -56,6 +65,9 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
     // Check if selectedAvatarIndex is a number (color index) or path
     final int? colorIndex = int.tryParse(_selectedAvatarIndex);
     final bool isCustomImage = colorIndex == null;
+    final ImageProvider? customImageProvider = isCustomImage
+        ? getProfileImageProvider(_selectedAvatarIndex)
+        : null;
 
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
@@ -172,14 +184,14 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      isCustomImage
+                      isCustomImage && customImageProvider != null
                           ? Container(
                               width: 120,
                               height: 120,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                  image: FileImage(File(_selectedAvatarIndex)),
+                                  image: customImageProvider,
                                   fit: BoxFit.cover,
                                 ),
                                 boxShadow: const [
@@ -197,12 +209,12 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color:
-                                    _avatarColors[colorIndex! %
+                                    _avatarColors[(colorIndex ?? 0) %
                                         _avatarColors.length],
                                 boxShadow: [
                                   BoxShadow(
                                     color:
-                                        _avatarColors[colorIndex %
+                                        _avatarColors[(colorIndex ?? 0) %
                                                 _avatarColors.length]
                                             .withValues(alpha: 0.5),
                                     blurRadius: 20,
