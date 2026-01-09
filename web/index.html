@@ -1,5 +1,7 @@
-kk<!DOCTYPE html>
+kk
+<!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -30,12 +32,50 @@ kk<!DOCTYPE html>
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>maxle</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    /* Loading Spinner Styles */
+    #loading-indicator {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #BB86FC;
+      /* Match app primary color */
+      animation: spin 1s ease-in-out infinite;
+      z-index: 9999;
+      margin-left: -25px;
+      /* Center horizontally */
+      margin-top: -25px;
+      /* Center vertically */
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <script>
+    // Global function to remove the loading indicator
+    window.removeLoadingIndicator = function () {
+      var loading = document.getElementById('loading-indicator');
+      if (loading) {
+        loading.remove();
+      }
+    };
+  </script>
 </head>
+
 <body>
+  <div id="loading-indicator"></div>
   <script src="flutter_bootstrap.js" async></script>
 </body>
+
 </html>

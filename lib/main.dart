@@ -9,6 +9,7 @@ import 'screens/weight_screen.dart';
 
 import 'screens/workout_selection_screen.dart';
 import 'screens/active_workout_screen.dart';
+import 'utils/loader_utils.dart';
 
 void main() {
   runApp(const MaxleApp());
@@ -71,6 +72,7 @@ class _MainScaffoldState extends State<MainScaffold> {
 
     // Check for active workout after build
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      removeWebLoadingIndicator();
       await _checkActiveWorkout();
     });
   }
