@@ -27,6 +27,17 @@ class MaxleApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Maxle',
+        builder: (context, child) {
+          return Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: child,
+              ),
+            ),
+          );
+        },
         scrollBehavior: const MaterialScrollBehavior().copyWith(
           dragDevices: {
             PointerDeviceKind.mouse,
