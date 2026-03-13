@@ -1,48 +1,59 @@
 # Maxle 🦾
 
-> A comprehensive fitness companion built with Flutter to track your weight, stay consistent with streaks, and manage your workouts effectively.
+> A locally persistent, offline-first fitness companion built with Flutter to gamify your workouts and maintain consistency streaks.
 
-## About The Project
+[![Demo/Live App](https://img.shields.io/badge/Live_Demo-Link-blue)](https://itslawrey-flutter-demos.web.app/) 
 
-As a computer science student passionate about health and mobile development, I built **Maxle** as a side project to log my workouts and weight. Building this application allowed me to dive deep into Flutter, state management, and local data persistence, while prioritizing a modern and sleek user interface. 
+## Visuals
 
-## Features
 
-* **Weight Tracking**  
-  Easily log your weight and visualize your journey over time. Built with clear and straightforward graphs to help you identify trends and stay motivated.
-  
-* **Routine & Workout Management**  
-  Select from a variety of exercises or create customized workout routines. Easily start a workout, log sets/reps, and view your progress in real-time.
-  
-* **Smart Workout Resumption**  
-  If you exit the app during an active session, Maxle remembers where you left off. On the next launch, it intelligently prompts you to resume your in-progress workout or save it securely to your history.
 
-* **Workout History**  
-  Keep track of all your past sessions. View detailed summaries of previous workouts, including the exercises performed, sets, and reps to monitor your progress over time.
+## Tech Stack
 
-* **Profile Customization**  
-  Personalize your experience by customizing your profile. Choose an avatar and tweak preferences to make the app truly yours.
+* **Frontend:** Flutter / Dart 3.0
+* **State Management:** Provider
+* **Local Storage:** SharedPreferences (for offline-first capabilities)
+* **Key Libraries:** `fl_chart` (for weight graphs), `table_calendar`, `google_fonts`
 
-* **Leveling System & XP**  
-  Stay motivated with an integrated RPG-like leveling system. Earn experience points (XP) for completing workouts and watch your profile level up as you build consistency.
+## Core Features
 
-* **Consistency Streaks**  
-  The app rewards consistency by tracking daily check-ins and streaks, adding an element of gamification to building healthy habits.
+* **Weight Tracking & Analytics:** Easily log your daily weight and calculate weekly averages to identify trends, filtering out the noise of daily fluctuations.
+* **Routine Management & Logging:** Pick your workout routines based on target muscle groups and locations, track elapsed time, and log completed exercises in real-time.
+* **Smart Workout Resumption:** If you exit the app during an active session, Maxle remembers where you left off. On the next launch, it intelligently prompts you to resume your in-progress workout or save it securely to your history.
+* **Workout History:** Browse your past workout sessions, including duration, exercises performed, and whether they were completed fully or partially off-schedule.
+* **Gamification & Leveling System:** Turn fitness into an RPG. You earn XP for consecutive daily check-ins (10 XP) and weight logging (20 XP), progressing your profile through 10 ranks from Novice all the way to Demigod.
+* **Consistency Streaks:** Keep the momentum going by checking in daily. Miss a day, and the streak resets, encouraging long-term discipline.
+* **Profile Personalization:** Customize your experience by picking an avatar and defining your aspirant nickname.
+* **Local-First Architecture:** All user data is preserved locally. Your app is entirely private, works without an internet connection, and operates with zero loading screens.
 
-* **Week Streak History**  
-  Visualize your consistency with a dedicated streak history display. Easily view your check-ins and completed workouts for the past months to keep your momentum going.
+## Technical Architecture & Challenges
 
-* **Beautiful UI/UX**  
-  Designed with a sleek, dark-mode-first aesthetic using Material 3 guidelines and custom typography (Google Fonts). The interface is robust, responsive, and easy to navigate with gestures or standard bottom navigation.
+### State Management & Data Flow
+I chose **Provider** for state management to guarantee a solid separation between the presentation layer and the app's business logic. Maxle handles state through two primary controllers: `AppProvider` (for user profiles, gamification, weight and streaks) and `WorkoutProvider` (for managing active workout flows). Isolating these controllers allowed me to optimize widget rebuilds, preventing complex screens from redrawing unnecessarily when simple states like the workout timer tick every second. This ensures smooth 60 FPS performance during workouts without memory leaks.
 
-* **Local Persistance**  
-  All user data is stored securely on the device, ensuring fast load times and complete privacy without needing constant internet access.
+### Local Data Persistence & Offline-first Approach
+One strict requirement I had for this side project was creating a fully offline-first experience. Using `SharedPreferences`, complex nested objects like workout histories, dates, and check-ins are serialized into JSON strings and stored right onto the device. A fun challenge here was handling date inconsistencies when compiling weekly weight averages or computing the weekly streak logic across different days. I addressed this by enforcing standard datetime constraints on the backend state to prevent any weird timezone conflicts or edge cases.
 
-## Built With
+### Smart Workout Resumption
+Managing app lifecycles asynchronously can be incredibly tricky. To ensure no data is lost if you minimize the app or shut it down during an intense workout, the `WorkoutProvider` frequently serializes the state—saving the elapsed time and all checked exercises into local storage. When the app is opened back up, the main scaffolding asynchronously restores the `active_workout_state`, intercepting the navigation router to prompt you to resume the context exactly where you left off. 
 
-* **[Flutter](https://flutter.dev/)** - The SDK used for cross-platform app development.
-* **[Dart](https://dart.dev/)** - The programming language powering the logic.
-* **Provider** - For efficient, scalable, and reactive state management across the app.
-* **Shared Preferences** - For lightweight local data storage and caching.
-* **fl_chart** - For rendering beautiful, interactive weight graphs.
-* **Google Fonts** - To provide a premium and modern typographic feel.
+## Installation & Local Setup
+
+To run this project locally, make sure you have the Flutter SDK installed on a fresh machine.
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/itsLawrey/flutter-maxle.git
+   ```
+2. Navigate into the application directory:
+   ```bash
+   cd flutter-maxle
+   ```
+3. Get the required local dependencies:
+   ```bash
+   flutter pub get
+   ```
+4. Build and run the application:
+   ```bash
+   flutter run
+   ```
