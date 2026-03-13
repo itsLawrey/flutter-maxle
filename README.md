@@ -7,6 +7,10 @@
 ## Visuals
 
 
+https://github.com/user-attachments/assets/fe72672e-7451-4520-8276-a6c168f53452
+
+
+
 
 ## Tech Stack
 
